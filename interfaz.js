@@ -37,7 +37,7 @@ function configurarCarpetas() {
     // 2. Pedir ID Origen
     const respuestaOrigen = ui.prompt(
         'Configuración de Origen',
-        'Por favor, ingresa el ID de la carpeta de ORIGEN (la que quieres copiar):\n' +
+        'Por favor, ingresa la URL COMPLETA o el ID de la carpeta de ORIGEN (la que quieres copiar):\n' +
         (origenActual ? '(Actual: ' + origenActual + ')' : ''),
         ui.ButtonSet.OK_CANCEL
     );
@@ -52,7 +52,7 @@ function configurarCarpetas() {
     // 3. Pedir ID Destino
     const respuestaDestino = ui.prompt(
         'Configuración de Destino',
-        'Por favor, ingresa el ID de la carpeta de DESTINO (Unidad Compartida):\n' +
+        'Por favor, ingresa la URL COMPLETA o el ID de la carpeta de DESTINO (Unidad Compartida):\n' +
         (destinoActual ? '(Actual: ' + destinoActual + ')' : ''),
         ui.ButtonSet.OK_CANCEL
     );
@@ -60,15 +60,18 @@ function configurarCarpetas() {
     if (respuestaDestino.getSelectedButton() !== ui.Button.OK) return;
     const nuevoDestino = respuestaDestino.getResponseText().trim();
     if (!nuevoDestino) {
-        ui.alert('El ID de destino no puede estar vacío.');
+        ui.alert('El identificador de destino no puede estar vacío.');
         return;
     }
 
-    // 4. Guardar en Propiedades
-    props.setProperty(PROP_ORIGEN_ID, nuevoOrigen);
-    props.setProperty(PROP_DESTINO_ID, nuevoDestino);
+    // 4. Limpiar los IDs ingresados y Guardar en Propiedades
+    const origenLimpio = extraerIdDeUrl(nuevoOrigen);
+    const destinoLimpio = extraerIdDeUrl(nuevoDestino);
 
-    ui.alert('✅ Configuración guardada exitosamente.\n\nOrigen: ' + nuevoOrigen + '\nDestino: ' + nuevoDestino + '\n\nAhora puedes ir al menú "🚀 Migración Drive" e iniciar la copia.');
+    props.setProperty(PROP_ORIGEN_ID, origenLimpio);
+    props.setProperty(PROP_DESTINO_ID, destinoLimpio);
+
+    ui.alert('✅ Configuración guardada exitosamente.\n\nOrigen (ID): ' + origenLimpio + '\nDestino (ID): ' + destinoLimpio + '\n\nAhora puedes ir al menú "🚀 Migración Drive" e iniciar la copia.');
 }
 
 /**
